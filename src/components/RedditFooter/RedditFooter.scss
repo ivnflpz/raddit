@@ -1,0 +1,34 @@
+.footer {
+    bottom: 0;
+    left: 0px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    height: 32px;
+    padding: 0 8px 0 4px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .link {
+        padding-right: 3px;
+        display: inline-block;
+        margin-right: 4px;
+        min-width: 25px;
+        white-space: nowrap;
+        word-break: normal;
+
+        a:link {
+            text-decoration: none;
+            color: #878A8C;
+        }
+
+        .link-text {
+            display: inline-block;
+            line-height: 1;
+            text-transform: capitalize;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+    }
+}

@@ -1,0 +1,43 @@
+.content {
+    margin-top: 8px;
+
+    .preview-image {
+        background-color: rgb(255, 255, 255); 
+        max-height: 512px; 
+        max-width: 600px;
+        margin: 0px auto;
+    }
+
+    .text-container {
+        max-height: 250px;
+        overflow: hidden;
+        padding: 5px 8px 10px;
+        text-align: left;
+        color: #1A1A1B;
+        -webkit-mask-image: linear-gradient(180deg,#000 60%,transparent);
+        mask-image: linear-gradient(180deg,#000 60%,transparent);
+
+        .md {
+            font-size: 14px;
+            
+            h1 {
+                font-size: 22px;
+            }
+
+            a {
+
+                color: rgb(234, 0, 39);
+                text-decoration: underline;
+            }
+
+            ul {
+                list-style: disc outside;
+                margin: 4px 0px 4px 8px;
+
+                li {
+                    margin: 0.4em 1em;
+                }
+            }
+        }
+    }
+}
