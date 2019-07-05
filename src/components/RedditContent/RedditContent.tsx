@@ -5,30 +5,30 @@ import parser from 'html-react-parser';
 
 import './RedditContent.scss';
 import Listing from '../../models/Listing';
-
-interface RedditVideo {
-    fallback_url: string;
-}
+import { Media, RedditVideo, Oembed } from '../../models/Media';
+import { Preview } from '../../models/Preview';
 
 class RedditContent extends Component<{listing: Listing},{}> { 
     renderVideo(video: RedditVideo) {
         return <ReactPlayer url={video.fallback_url} controls={true} width="600" />
     }
 
-    renderFrame(media: any) {
+    renderFrame(oembed: Oembed) {
         return (
             <div className="iframe-container" >
-                {parser(media.html)}
+                {parser(oembed.html)}
             </div>
         )
     }
 
-    renderPreview(preview: any) {
+    renderPreview(preview: Preview) {
         if (preview.reddit_video_preview != null) {
             return this.renderVideo(preview.reddit_video_preview);
+        } else if (preview.images != null) {
+            const url = preview.images[0].source.url;
+            return <img className="preview-image" alt="Post Image" src={url}></img>
         }
-        const url = preview.images[0].source.url;
-        return <img className="preview-image" alt="Post Image" src={url}></img>
+        return "";
     }
 
     renderText(selftext_html: string) {
@@ -39,7 +39,7 @@ class RedditContent extends Component<{listing: Listing},{}> {
         )
     }
 
-    renderMedia(media: any) {
+    renderMedia(media: Media) {
         if (media.oembed != null) {
             return this.renderFrame(media.oembed);
         } else if (media.reddit_video != null) {

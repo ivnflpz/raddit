@@ -1,12 +1,14 @@
+import { Media } from './Media';
+import { Preview } from './Preview';
+
 interface Listing {
     title: string;
     author_fullname: string;
     created_utc: number;
     score: number;
-    // media_embed: any;
-    media: any;
+    media: Media;
     num_comments: number;
-    preview?: any;
+    preview?: Preview;
     selftext_html?: string;
     subreddit: string;
 }
