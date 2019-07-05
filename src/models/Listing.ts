@@ -2,6 +2,7 @@ import { Media } from './Media';
 import { Preview } from './Preview';
 
 interface Listing {
+    id: string;
     title: string;
     author_fullname: string;
     created_utc: number;

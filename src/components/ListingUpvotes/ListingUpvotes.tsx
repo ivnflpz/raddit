@@ -3,20 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './ListingUpvotes.scss';
 import Listing from '../../models/Listing';
+import util from '../../helpers/util';
 
 class ListingUpvotes extends Component<{listing: Listing},{}> { 
-    normalizeNumber(number: number) {
-        if (number > 100000) {
-            return (number / 1000).toFixed(0) + 'K';
-        } else if (number > 1000) {
-            return (number / 1000).toFixed(1) + 'K';
-        }
-        return '' + number;
-    }
-
     render() {
         const listing: Listing = this.props.listing;
-        let scoreString = this.normalizeNumber(listing.score);
+        let scoreString = util.normalizeNumber(listing.score);
         return (
             <div className="upvotes-container">
                 <div className="upvotes">

@@ -3,19 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import './RedditFooter.scss';
 import Listing from '../../models/Listing';
+import util from '../../helpers/util';
 
-class RedditFooter extends Component<{listing: Listing},{}> { 
-    normalizeNumber(number: number) {
-        if (number > 100000) {
-            return (number / 1000).toFixed(0) + 'K';
-        } else if (number > 1000) {
-            return (number / 1000).toFixed(1) + 'K';
-        }
-        return '' + number;
-    }
-
+class RedditFooter extends Component<{listing: Listing},{}> {
     renderFooter(numComments: number) {
-        let numString = this.normalizeNumber(numComments);
+        let numString = util.normalizeNumber(numComments);
         return (
             <div className="footer">
                 <div className="link">
