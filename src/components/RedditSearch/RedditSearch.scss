@@ -37,4 +37,12 @@
         outline: none;
         padding: 0px 16px 0px 40px;
     }
+
+    .search:hover {
+        background-color: rgb(255, 255, 255);
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(234, 0, 39);
+        border-image: initial;
+    }
 }

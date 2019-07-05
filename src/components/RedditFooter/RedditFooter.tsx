@@ -24,6 +24,13 @@ class RedditFooter extends Component<{listing: Listing},{}> {
                         <span className="link-text">{numString} comments</span>
                     </a>
                 </div>
+
+                <div className="link">
+                    <a href="#">
+                        <FontAwesomeIcon icon="award"></FontAwesomeIcon>
+                        <span className="link-text">Give award</span>
+                    </a>
+                </div>
                 
                 <div className="link">
                     <a href="#">

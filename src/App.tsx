@@ -1,17 +1,30 @@
 import React from 'react';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faArrowUp, faArrowDown, faBookmark, faCommentAlt, faSearch, faShare } from '@fortawesome/free-solid-svg-icons'
+import {
+  faArrowUp,
+  faArrowDown,
+  faAward,
+  faBookmark,
+  faCommentAlt,
+  faSearch,
+  faShare
+} from '@fortawesome/free-solid-svg-icons';
  
-
-
-// import logo from './logo.svg';
 import logo from './raddit.png';
 import './App.css';
 import RedditManager from './components/RedditManager/RedditManager';
 
 
-library.add(faArrowUp, faArrowDown, faBookmark, faCommentAlt, faSearch, faShare)
+library.add(
+  faArrowUp,
+  faArrowDown,
+  faAward,
+  faBookmark,
+  faCommentAlt,
+  faSearch,
+  faShare
+)
 const App: React.FC = () => {
   return (
     <div className="App">

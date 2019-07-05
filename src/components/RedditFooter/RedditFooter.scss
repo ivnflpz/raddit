@@ -5,22 +5,29 @@
     font-weight: 700;
     line-height: 16px;
     height: 32px;
-    padding: 0 8px 0 4px;
+    padding: 0 8px 0 10px;
     display: flex;
     flex-direction: row;
     align-items: center;
 
     .link {
-        padding-right: 3px;
         display: inline-block;
-        margin-right: 4px;
+        margin-right: 5px;
         min-width: 25px;
         white-space: nowrap;
         word-break: normal;
 
+        a {
+            padding: 4px;
+        }
+
         a:link {
             text-decoration: none;
             color: #878A8C;
+        }
+
+        a:hover {
+            background: rgba(26,26,27,0.1);
         }
 
         .link-text {
@@ -28,7 +35,7 @@
             line-height: 1;
             text-transform: capitalize;
             vertical-align: middle;
-            margin-left: 2px;
+            margin-left: 5px;
         }
     }
 }
