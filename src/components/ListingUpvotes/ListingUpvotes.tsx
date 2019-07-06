@@ -15,19 +15,28 @@ enum Direction {
 }
 
 interface ListingUpvotesState {
-    score?: number;
+    score: number;
     direction: Direction;
 }
 class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> { 
     constructor(props: any) {
         super(props);
         this.state = {
-            score: undefined,
+            score: 0,
             direction: Direction.None
         }
 
         this.handleUpvote = this.handleUpvote.bind(this);
         this.handleDownvote= this.handleDownvote.bind(this);
+    }
+
+    componentDidMount() {
+        const listing = this.props.listing;
+        let direction = Direction.None;
+        if (listing.likes != null) {
+            direction = listing.likes ? Direction.Up : Direction.Down;
+        }
+        this.setState({score: listing.score, direction: direction});
     }
 
     handleUpvote() {
@@ -80,8 +89,7 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
 
     render() {
         const listing: Listing = this.props.listing;
-        const score = this.state.score || listing.score;
-        let scoreString = util.normalizeNumber(score);
+        let scoreString = util.normalizeNumber(listing.score);
 
         const upClasses = classnames({
             up: true,
