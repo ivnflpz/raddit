@@ -10,13 +10,25 @@
         svg {
             height: 18px;
         }
-    
+        
+        .up:hover {
+            color: rgb(204, 55, 0);
+            background-color: rgba(26, 26, 27, 0.1);
+            outline: none;
+        }
+
         .down {
             display: inline-block;
     
             svg {
                 vertical-align: top;
             }
+        }
+
+        .down:hover {
+            color: rgb(90, 117, 204);
+            background-color: rgba(26, 26, 27, 0.1);
+            outline: none;
         }
     
         .score {
