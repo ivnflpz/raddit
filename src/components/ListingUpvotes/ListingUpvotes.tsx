@@ -5,9 +5,9 @@ import classnames from 'classnames';
 import './ListingUpvotes.scss';
 import Listing from '../../models/Listing';
 import util from '../../helpers/util';
-// import redditApi from '../../services/RedditApi';
+import redditApi from '../../services/RedditApi';
 
-const SCORE_INCREMENT = 1000;
+const SCORE_INCREMENT = 1;
 enum Direction {
     Up,
     Down,
@@ -32,6 +32,9 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
 
     handleUpvote() {
         const listing = this.props.listing;
+        const oldScore = listing.score;
+        const oldDirection = this.state.direction;
+
         let newDirection = Direction.Up;
         switch (this.state.direction) {
             case Direction.Up:
@@ -46,10 +49,16 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
                 break;
         }
         this.setState({score: listing.score, direction: newDirection});
+        redditApi.upvote(listing.id).catch((error: any) => {
+            this.setState({score: oldScore, direction: oldDirection});
+        });
     }
 
     handleDownvote() {
         const listing = this.props.listing;
+        const oldScore = listing.score;
+        const oldDirection = this.state.direction;
+
         let newDirection = Direction.Down;
         switch (this.state.direction) {
             case Direction.Up:
@@ -64,6 +73,9 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
                 break;
         }
         this.setState({score: listing.score, direction: newDirection});
+        redditApi.downvote(listing.id).catch((error: any) => {
+            this.setState({score: oldScore, direction: oldDirection});
+        });
     }
 
     render() {
@@ -73,18 +85,18 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
 
         const upClasses = classnames({
             up: true,
-            upvoted: this.state.direction == Direction.Up
+            upvoted: this.state.direction === Direction.Up
         });
 
         const scoreClasses = classnames({
             score: true,
-            upvoted: this.state.direction == Direction.Up,
-            downvoted: this.state.direction == Direction.Down
+            upvoted: this.state.direction === Direction.Up,
+            downvoted: this.state.direction === Direction.Down
         });
 
         const downClasses = classnames({
             down: true,
-            downvoted: this.state.direction == Direction.Down
+            downvoted: this.state.direction === Direction.Down
         });
         return (
             <div className="upvotes-container">
