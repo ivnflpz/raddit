@@ -35,6 +35,10 @@ const redditApi = {
 
     downvote(submission: string) {
         return wrapper.getSubmission(submission).downvote();
+    },
+
+    unvote(submission: string) {
+        return wrapper.getSubmission(submission).unvote();
     }
 }
 

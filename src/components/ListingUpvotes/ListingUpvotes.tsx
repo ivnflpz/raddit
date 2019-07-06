@@ -28,6 +28,7 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
 
         this.handleUpvote = this.handleUpvote.bind(this);
         this.handleDownvote= this.handleDownvote.bind(this);
+        this.handleVote= this.handleVote.bind(this);
     }
 
     componentDidMount() {
@@ -57,10 +58,7 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
                 listing.score += SCORE_INCREMENT;
                 break;
         }
-        this.setState({score: listing.score, direction: newDirection});
-        redditApi.upvote(listing.id).catch((error: any) => {
-            this.setState({score: oldScore, direction: oldDirection});
-        });
+        this.handleVote(listing, newDirection, oldScore, oldDirection);
     }
 
     handleDownvote() {
@@ -81,8 +79,23 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
                 listing.score -= SCORE_INCREMENT;
                 break;
         }
+        this.handleVote(listing, newDirection, oldScore, oldDirection);
+    }
+
+    handleVote(listing: Listing, newDirection: Direction, oldScore: number, oldDirection: Direction) {
         this.setState({score: listing.score, direction: newDirection});
-        redditApi.downvote(listing.id).catch((error: any) => {
+
+        let voteFunc = redditApi.unvote;
+        switch (newDirection) {
+            case Direction.Up:
+                voteFunc = redditApi.upvote;
+                break;
+            case Direction.Down:
+                voteFunc = redditApi.downvote;
+                break;
+            default:
+        }
+        voteFunc(listing.id).catch((error: any) => {
             this.setState({score: oldScore, direction: oldDirection});
         });
     }
