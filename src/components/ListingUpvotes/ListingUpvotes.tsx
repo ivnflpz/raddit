@@ -95,7 +95,7 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
                 break;
             default:
         }
-        voteFunc(listing.id).catch((error: any) => {
+        voteFunc(listing).catch((error: any) => {
             this.setState({score: oldScore, direction: oldDirection});
         });
     }

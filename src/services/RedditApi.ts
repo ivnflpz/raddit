@@ -1,3 +1,5 @@
+import Listing from "../models/Listing";
+
 const snoowrap = require('snoowrap');
 
 const wrapper = new snoowrap({
@@ -19,7 +21,7 @@ const redditApi = {
                 return new Promise((resolve) => {
                     resolve(JSON.parse(l));
                 });
-            } 
+            }
         }
 
         return wrapper.getSubreddit(subreddit).getTop({limit: 50, time: 'all'})
@@ -29,16 +31,61 @@ const redditApi = {
         });
     },
 
-    upvote(submission: string) {
-        return wrapper.getSubmission(submission).upvote();
+    upvote(listing: Listing) {
+        return new Promise((resolve, reject) => {
+            wrapper.getSubmission(listing.id).upvote()
+                .then(() => {
+                    for (let key in localStorage) {
+                        if (key.startsWith(listing.subreddit)) {
+                            localStorage.removeItem(key);
+                        }
+                    }
+                    // this.destroyCache(listing.subreddit);
+                    resolve();
+                })
+                .catch(reject)
+        });
     },
 
-    downvote(submission: string) {
-        return wrapper.getSubmission(submission).downvote();
+    downvote(listing: Listing) {
+        return new Promise((resolve, reject) => {
+            wrapper.getSubmission(listing.id).downvote()
+                .then(() => {
+                    for (let key in localStorage) {
+                        if (key.startsWith(listing.subreddit)) {
+                            localStorage.removeItem(key);
+                        }
+                    }
+                    // this.destroyCache(listing.subreddit);
+                    resolve();
+                })
+                .catch(reject)
+        });
     },
 
-    unvote(submission: string) {
-        return wrapper.getSubmission(submission).unvote();
+    unvote(listing: Listing) {
+        return new Promise((resolve, reject) => {
+            wrapper.getSubmission(listing.id).unvote()
+                .then(() => {
+                    for (let key in localStorage) {
+                        if (key.startsWith(listing.subreddit)) {
+                            localStorage.removeItem(key);
+                        }
+                    }
+                    // this.destroyCache(listing.subreddit);
+                    resolve();
+                })
+                .catch(reject)
+        });
+    },
+
+    // todo: figure out why this isn't being called
+    destroyCache(subreddit: string) {
+        for (let key in localStorage) {
+            if (key.startsWith(subreddit)) {
+                localStorage.removeItem(key);
+            }
+        }
     }
 }
 
