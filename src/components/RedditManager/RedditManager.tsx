@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import './RedditManager.css';
-import Listing from '../../models/Listing';
+import { Listing } from '../../models';
 import RedditSearch from '../RedditSearch/RedditSearch';
 import RedditList from '../RedditList/RedditList';
 

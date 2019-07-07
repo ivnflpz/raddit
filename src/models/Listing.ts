@@ -1,7 +1,7 @@
 import { Media } from './Media';
 import { Preview } from './Preview';
 
-interface Listing {
+export interface Listing {
     id: string;
     title: string;
     author: string;
@@ -14,5 +14,3 @@ interface Listing {
     selftext_html?: string;
     subreddit: string;
 }
-
-export default Listing;

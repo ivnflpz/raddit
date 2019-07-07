@@ -5,7 +5,7 @@ import './RedditListing.scss';
 import RedditContent from '../RedditContent/RedditContent';
 import RedditFooter from '../RedditFooter/RedditFooter';
 import ListingUpvotes from '../ListingUpvotes/ListingUpvotes';
-import Listing from '../../models/Listing';
+import { Listing } from '../../models';
 
 class RedditListing extends Component<{listing: Listing},{}> { 
     renderAuthor(author: string, created_utc: number) {

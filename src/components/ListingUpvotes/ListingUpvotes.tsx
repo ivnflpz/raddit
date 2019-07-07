@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classnames from 'classnames';
 
 import './ListingUpvotes.scss';
-import Listing from '../../models/Listing';
+import { Listing } from '../../models';
 import util from '../../helpers/util';
 import redditApi from '../../services/RedditApi';
 

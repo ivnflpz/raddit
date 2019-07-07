@@ -1,6 +1,4 @@
-import Listing from "../models/Listing";
-import { SortCategory } from '../models/SortCategory';
-import { SortOption } from "../models/SortOptions";
+import { Listing, SortCategory, SortOption } from '../models';
 
 const snoowrap = require('snoowrap');
 
@@ -59,7 +57,6 @@ const redditApi = {
             default:
                 searchFunc = () => new Promise(resolve => resolve([]));
         }
-        console.log(searchFunc);
         return searchFunc().then((results: any) => {
             localStorage.setItem(cacheKey, JSON.stringify(results));
             return results;

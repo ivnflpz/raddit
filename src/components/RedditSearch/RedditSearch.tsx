@@ -14,6 +14,7 @@ interface RedditSearchState {
     query: string;
     sort: SortCategory;
     sortOptions: any;
+    hasResults: boolean;
 }
 class RedditSearch extends React.Component<{handleResults: Function}, RedditSearchState> {
     constructor(props: any) {
@@ -22,7 +23,8 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
         this.state = {
             query: '',
             sort: SortCategory.Top,
-            sortOptions: Object.assign({}, SortOptions)
+            sortOptions: Object.assign({}, SortOptions),
+            hasResults: false
         }
     }
 
@@ -32,6 +34,7 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
         }
         const options: SortOption = this.state.sortOptions[this.state.sort];
         redditApi.search(this.state.query, options).then((results: any) => {
+            this.setState({hasResults: true})
             this.props.handleResults(results);
         });
     }
@@ -76,6 +79,9 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
     }
 
     renderSortOptions() {
+        if (!this.state.hasResults) {
+            return "";
+        }
         return (
             <ButtonToolbar>
                 <DropdownButton title={'Sort ' + this.state.sort} id="sort-dropdown" onSelect={(evt: any) => this.handleSortSelect(evt)}>
