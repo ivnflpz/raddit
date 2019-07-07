@@ -1,5 +1,6 @@
 import Listing from "../models/Listing";
 import { SortCategory } from '../models/SortCategory';
+import { SortOption } from "../models/SortOptions";
 
 const snoowrap = require('snoowrap');
 
@@ -20,12 +21,15 @@ function destroyCache(subreddit: string) {
 }
 
 const redditApi = {
-    search(subreddit: string, sort: SortCategory) {
+    search(subreddit: string, sortOptions: SortOption) {
         if (subreddit.trim().length === 0) {
             return new Promise(resolve => resolve([]));
         }
 
-        let cacheKey = subreddit + '.' + sort;
+        let cacheKey = subreddit + '.' + sortOptions.type;
+        if (sortOptions.timeSupported) {
+            cacheKey += '.' + sortOptions.time;
+        }
         if (cacheKey in localStorage) {
             const l = localStorage.getItem(cacheKey);
             if (l !== null) {
@@ -36,7 +40,7 @@ const redditApi = {
         }
 
         let searchFunc;
-        switch (sort) {
+        switch (sortOptions.type) {
             case SortCategory.Hot:
                 searchFunc = () => wrapper.getSubreddit(subreddit).getHot({limit: 50});
                 break;
@@ -44,10 +48,10 @@ const redditApi = {
                 searchFunc = () => wrapper.getSubreddit(subreddit).getNew({limit: 50});
                 break;
             case SortCategory.Controversial:
-                searchFunc = () => wrapper.getSubreddit(subreddit).getControversial({limit: 50, time: 'all'});
+                searchFunc = () => wrapper.getSubreddit(subreddit).getControversial({limit: 50, time: sortOptions.time});
                 break;
             case SortCategory.Top:
-                searchFunc = () => wrapper.getSubreddit(subreddit).getTop({limit: 50, time: 'all'});
+                searchFunc = () => wrapper.getSubreddit(subreddit).getTop({limit: 50, time: sortOptions.time});
                 break;
             case SortCategory.Rising:
                 searchFunc = () => wrapper.getSubreddit(subreddit).getRising({limit: 50});
