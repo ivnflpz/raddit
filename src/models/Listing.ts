@@ -4,7 +4,7 @@ import { Preview } from './Preview';
 interface Listing {
     id: string;
     title: string;
-    author_fullname: string;
+    author: string;
     created_utc: number;
     score: number;
     likes?: boolean;

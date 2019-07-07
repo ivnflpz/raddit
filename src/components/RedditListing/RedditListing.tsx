@@ -34,7 +34,7 @@ class RedditListing extends Component<{listing: Listing},{}> {
             <div className="listing">
                 <ListingUpvotes listing={listing}></ListingUpvotes>
                 <div className="info">
-                    {this.renderAuthor(listing.author_fullname, listing.created_utc)}
+                    {this.renderAuthor(listing.author, listing.created_utc)}
                     
                     {this.renderTitle(listing.title)}
                     <RedditContent listing={listing}></RedditContent>
