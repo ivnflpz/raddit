@@ -7,6 +7,7 @@ interface Listing {
     author_fullname: string;
     created_utc: number;
     score: number;
+    likes?: boolean;
     media: Media;
     num_comments: number;
     preview?: Preview;
