@@ -27,8 +27,8 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
         }
 
         this.handleUpvote = this.handleUpvote.bind(this);
-        this.handleDownvote= this.handleDownvote.bind(this);
-        this.handleVote= this.handleVote.bind(this);
+        this.handleDownvote = this.handleDownvote.bind(this);
+        this.handleVote = this.handleVote.bind(this);
     }
 
     componentDidMount() {
