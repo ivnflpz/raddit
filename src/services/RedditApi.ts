@@ -1,4 +1,5 @@
 import Listing from "../models/Listing";
+import { SortCategory } from '../models/SortCategory';
 
 const snoowrap = require('snoowrap');
 
@@ -10,13 +11,14 @@ const wrapper = new snoowrap({
 });
 
 const redditApi = {
-    getTop(subreddit: string) {
+    search(subreddit: string, sort: SortCategory) {
         if (subreddit.trim().length === 0) {
-            return;
+            return new Promise(resolve => resolve([]));
         }
 
-        if (subreddit in localStorage) {
-            const l = localStorage.getItem(subreddit);
+        let cacheKey = subreddit + '.' + sort;
+        if (cacheKey in localStorage) {
+            const l = localStorage.getItem(cacheKey);
             if (l !== null) {
                 return new Promise((resolve) => {
                     resolve(JSON.parse(l));
@@ -24,9 +26,29 @@ const redditApi = {
             }
         }
 
-        return wrapper.getSubreddit(subreddit).getTop({limit: 50, time: 'all'})
-        .then((results: any) => {
-            localStorage.setItem(subreddit, JSON.stringify(results));
+        let searchFunc;
+        switch (sort) {
+            case SortCategory.Hot:
+                searchFunc = () => wrapper.getSubreddit(subreddit).getHot({limit: 50});
+                break;
+            case SortCategory.New:
+                searchFunc = () => wrapper.getSubreddit(subreddit).getNew({limit: 50});
+                break;
+            case SortCategory.Controversial:
+                searchFunc = () => wrapper.getSubreddit(subreddit).getControversial({limit: 50, time: 'all'});
+                break;
+            case SortCategory.Top:
+                searchFunc = () => wrapper.getSubreddit(subreddit).getTop({limit: 50, time: 'all'});
+                break;
+            case SortCategory.Controversial:
+                searchFunc = () => wrapper.getSubreddit(subreddit).getRising({limit: 50});
+                break;
+            default:
+                searchFunc = () => new Promise(resolve => resolve([]));
+        }
+        console.log(searchFunc);
+        return searchFunc().then((results: any) => {
+            localStorage.setItem(cacheKey, JSON.stringify(results));
             return results;
         });
     },

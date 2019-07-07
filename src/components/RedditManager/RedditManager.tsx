@@ -5,6 +5,8 @@ import Listing from '../../models/Listing';
 import RedditSearch from '../RedditSearch/RedditSearch';
 import RedditList from '../RedditList/RedditList';
 
+const uuid = require('uuid/v4');
+
 class RedditManager extends Component<{}, {results: Listing[]}> { 
     constructor(props: any) {
         super(props);
@@ -21,7 +23,7 @@ class RedditManager extends Component<{}, {results: Listing[]}> {
     render() {
         const results = this.state.results;
         const listElem: any = results.length > 0
-            ? <RedditList key={results[0].subreddit} results={results}></RedditList>
+            ? <RedditList key={uuid()} results={results}></RedditList>
             : '';
         return (
             <div className="container">
