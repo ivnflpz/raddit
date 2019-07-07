@@ -49,7 +49,7 @@ const redditApi = {
             case SortCategory.Top:
                 searchFunc = () => wrapper.getSubreddit(subreddit).getTop({limit: 50, time: 'all'});
                 break;
-            case SortCategory.Controversial:
+            case SortCategory.Rising:
                 searchFunc = () => wrapper.getSubreddit(subreddit).getRising({limit: 50});
                 break;
             default:
