@@ -10,6 +10,15 @@ const wrapper = new snoowrap({
     refreshToken: process.env.REACT_APP_REFRESH_TOKEN
 });
 
+function destroyCache(subreddit: string) {
+    const keys = Object.keys(localStorage);
+    for (let key of keys) {
+        if (key.startsWith(subreddit)) {
+            localStorage.removeItem(key);
+        }
+    }
+}
+
 const redditApi = {
     search(subreddit: string, sort: SortCategory) {
         if (subreddit.trim().length === 0) {
@@ -57,12 +66,7 @@ const redditApi = {
         return new Promise((resolve, reject) => {
             wrapper.getSubmission(listing.id).upvote()
                 .then(() => {
-                    for (let key in localStorage) {
-                        if (key.startsWith(listing.subreddit)) {
-                            localStorage.removeItem(key);
-                        }
-                    }
-                    // this.destroyCache(listing.subreddit);
+                    destroyCache(listing.subreddit);
                     resolve();
                 })
                 .catch(reject)
@@ -73,12 +77,7 @@ const redditApi = {
         return new Promise((resolve, reject) => {
             wrapper.getSubmission(listing.id).downvote()
                 .then(() => {
-                    for (let key in localStorage) {
-                        if (key.startsWith(listing.subreddit)) {
-                            localStorage.removeItem(key);
-                        }
-                    }
-                    // this.destroyCache(listing.subreddit);
+                    destroyCache(listing.subreddit);
                     resolve();
                 })
                 .catch(reject)
@@ -89,25 +88,11 @@ const redditApi = {
         return new Promise((resolve, reject) => {
             wrapper.getSubmission(listing.id).unvote()
                 .then(() => {
-                    for (let key in localStorage) {
-                        if (key.startsWith(listing.subreddit)) {
-                            localStorage.removeItem(key);
-                        }
-                    }
-                    // this.destroyCache(listing.subreddit);
+                    destroyCache(listing.subreddit);
                     resolve();
                 })
                 .catch(reject)
         });
-    },
-
-    // todo: figure out why this isn't being called
-    destroyCache(subreddit: string) {
-        for (let key in localStorage) {
-            if (key.startsWith(subreddit)) {
-                localStorage.removeItem(key);
-            }
-        }
     }
 }
 
