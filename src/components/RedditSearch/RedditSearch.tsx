@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { InputGroup, Dropdown, DropdownButton, FormControl, Navbar } from 'react-bootstrap';
+import { InputGroup, Dropdown, DropdownButton, FormControl, Navbar, Spinner } from 'react-bootstrap';
 
 import './RedditSearch.scss';
 
@@ -12,6 +12,7 @@ interface RedditSearchState {
     sort: SortCategory;
     sortOptions: any;
     hasResults: boolean;
+    loading: boolean;
 }
 class RedditSearch extends React.Component<{handleResults: Function}, RedditSearchState> {
     constructor(props: any) {
@@ -21,7 +22,8 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
             query: '',
             sort: SortCategory.Top,
             sortOptions: Object.assign({}, SortOptions),
-            hasResults: false
+            hasResults: false,
+            loading: false
         }
     }
 
@@ -31,7 +33,7 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
         }
         const options: SortOption = this.state.sortOptions[this.state.sort];
         redditApi.search(this.state.query, options).then((results: any) => {
-            this.setState({hasResults: true}, () => {
+            this.setState({hasResults: true, loading: false}, () => {
                 this.props.handleResults(results);
             });
         });
@@ -43,19 +45,19 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
 
     keyPressed(evt: any) {
         if (evt.key === "Enter") {
-            this.search();
+            this.setState({loading: true}, this.search);
         }
     }
 
     handleSortSelect(evt: any) {
-        this.setState({sort: evt}, this.search);
+        this.setState({sort: evt, loading: true}, this.search);
     }
 
     handleTimeSelect(evt: any) {
         const sort = this.state.sort;
         let sortOptions = Object.assign({},this.state.sortOptions);
         sortOptions[sort].time = evt;
-        this.setState({sortOptions: sortOptions}, this.search);
+        this.setState({sortOptions: sortOptions, loading: true}, this.search);
     }
 
     renderTimeOptions() {
@@ -94,12 +96,17 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
     }
 
     render() {
+        const prependIcon = this.state.loading
+            ? <Spinner animation="grow" size="sm" />
+            : <FontAwesomeIcon icon="search" />
         return (
             <Navbar bg="light" variant="light" fixed="top">
             
                 <InputGroup>
                     <InputGroup.Prepend>
-                        <InputGroup.Text><FontAwesomeIcon icon="search"></FontAwesomeIcon></InputGroup.Text>
+                        <InputGroup.Text>
+                            {prependIcon}
+                        </InputGroup.Text>
                     </InputGroup.Prepend>
                     <FormControl placeholder="Search raddit" aria-label="Search raddit" aria-describedby="basic-addon2" 
                         value={this.state.query} 
