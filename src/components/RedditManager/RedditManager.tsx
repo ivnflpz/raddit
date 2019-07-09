@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 
 import './RedditManager.css';
-import Listing from '../../models/Listing';
+import logo from '../../raddit.png';
+import { Listing } from '../../models';
 import RedditSearch from '../RedditSearch/RedditSearch';
 import RedditList from '../RedditList/RedditList';
+
+const uuid = require('uuid/v4');
 
 class RedditManager extends Component<{}, {results: Listing[]}> { 
     constructor(props: any) {
@@ -18,15 +21,20 @@ class RedditManager extends Component<{}, {results: Listing[]}> {
         this.setState({results: results});
     }
 
-    render() {
+    renderContainer() {
         const results = this.state.results;
-        const listElem: any = results.length > 0
-            ? <RedditList key={results[0].subreddit} results={results}></RedditList>
-            : '';
+        return results.length > 0
+            ? <RedditList key={uuid()} results={results}></RedditList>
+            : <img src={logo} className="App-logo" alt="logo" />
+    }
+
+    render() {
         return (
-            <div className="container">
+            <div>
                 <RedditSearch handleResults={this.handleResults}></RedditSearch>
-                {listElem}
+                <div className="container">
+                    {this.renderContainer()}
+                </div>
             </div>
         )
     }

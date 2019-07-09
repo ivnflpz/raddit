@@ -4,9 +4,7 @@ import ReactPlayer from 'react-player'
 import parser from 'html-react-parser';
 
 import './RedditContent.scss';
-import Listing from '../../models/Listing';
-import { Media, RedditVideo, Oembed } from '../../models/Media';
-import { Preview } from '../../models/Preview';
+import { Media, Listing, RedditVideo, Oembed, Preview } from '../../models';
 
 class RedditContent extends Component<{listing: Listing},{}> { 
     renderVideo(video: RedditVideo) {

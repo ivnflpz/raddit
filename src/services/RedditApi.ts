@@ -1,4 +1,4 @@
-import Listing from "../models/Listing";
+import { Listing, SortCategory, SortOption } from '../models';
 
 const snoowrap = require('snoowrap');
 
@@ -9,14 +9,27 @@ const wrapper = new snoowrap({
     refreshToken: process.env.REACT_APP_REFRESH_TOKEN
 });
 
+function destroyCache(subreddit: string) {
+    const keys = Object.keys(localStorage);
+    for (let key of keys) {
+        if (key.startsWith(subreddit)) {
+            localStorage.removeItem(key);
+        }
+    }
+}
+
 const redditApi = {
-    getTop(subreddit: string) {
+    search(subreddit: string, sortOptions: SortOption) {
         if (subreddit.trim().length === 0) {
-            return;
+            return new Promise(resolve => resolve([]));
         }
 
-        if (subreddit in localStorage) {
-            const l = localStorage.getItem(subreddit);
+        let cacheKey = subreddit + '.' + sortOptions.type;
+        if (sortOptions.timeSupported) {
+            cacheKey += '.' + sortOptions.time;
+        }
+        if (cacheKey in localStorage) {
+            const l = localStorage.getItem(cacheKey);
             if (l !== null) {
                 return new Promise((resolve) => {
                     resolve(JSON.parse(l));
@@ -24,23 +37,40 @@ const redditApi = {
             }
         }
 
-        return wrapper.getSubreddit(subreddit).getTop({limit: 50, time: 'all'})
-        .then((results: any) => {
-            localStorage.setItem(subreddit, JSON.stringify(results));
-            return results;
-        });
+        let searchFunc;
+        switch (sortOptions.type) {
+            case SortCategory.Hot:
+                searchFunc = () => wrapper.getSubreddit(subreddit).getHot({limit: 50});
+                break;
+            case SortCategory.New:
+                searchFunc = () => wrapper.getSubreddit(subreddit).getNew({limit: 50});
+                break;
+            case SortCategory.Controversial:
+                searchFunc = () => wrapper.getSubreddit(subreddit).getControversial({limit: 50, time: sortOptions.time});
+                break;
+            case SortCategory.Top:
+                searchFunc = () => wrapper.getSubreddit(subreddit).getTop({limit: 50, time: sortOptions.time});
+                break;
+            case SortCategory.Rising:
+                searchFunc = () => wrapper.getSubreddit(subreddit).getRising({limit: 50});
+                break;
+            default:
+                searchFunc = () => new Promise(resolve => resolve([]));
+        }
+        return searchFunc()
+            // force fetch of all data before sending it to local storage
+            .then(JSON.stringify)
+            .then((result: string) => {
+                localStorage.setItem(cacheKey, result);
+                return JSON.parse(result);
+            });
     },
 
     upvote(listing: Listing) {
         return new Promise((resolve, reject) => {
             wrapper.getSubmission(listing.id).upvote()
                 .then(() => {
-                    for (let key in localStorage) {
-                        if (key.startsWith(listing.subreddit)) {
-                            localStorage.removeItem(key);
-                        }
-                    }
-                    // this.destroyCache(listing.subreddit);
+                    destroyCache(listing.subreddit);
                     resolve();
                 })
                 .catch(reject)
@@ -51,12 +81,7 @@ const redditApi = {
         return new Promise((resolve, reject) => {
             wrapper.getSubmission(listing.id).downvote()
                 .then(() => {
-                    for (let key in localStorage) {
-                        if (key.startsWith(listing.subreddit)) {
-                            localStorage.removeItem(key);
-                        }
-                    }
-                    // this.destroyCache(listing.subreddit);
+                    destroyCache(listing.subreddit);
                     resolve();
                 })
                 .catch(reject)
@@ -67,25 +92,11 @@ const redditApi = {
         return new Promise((resolve, reject) => {
             wrapper.getSubmission(listing.id).unvote()
                 .then(() => {
-                    for (let key in localStorage) {
-                        if (key.startsWith(listing.subreddit)) {
-                            localStorage.removeItem(key);
-                        }
-                    }
-                    // this.destroyCache(listing.subreddit);
+                    destroyCache(listing.subreddit);
                     resolve();
                 })
                 .catch(reject)
         });
-    },
-
-    // todo: figure out why this isn't being called
-    destroyCache(subreddit: string) {
-        for (let key in localStorage) {
-            if (key.startsWith(subreddit)) {
-                localStorage.removeItem(key);
-            }
-        }
     }
 }
 

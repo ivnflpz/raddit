@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import RedditListing from '../RedditListing/RedditListing';
-import Listing from '../../models/Listing';
+import { Listing } from '../../models';
 
 const InfiniteScroll = require('react-infinite-scroller');
 
