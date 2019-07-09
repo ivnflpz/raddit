@@ -3,7 +3,7 @@ import { Listing, SortCategory, SortOption } from '../models';
 const snoowrap = require('snoowrap');
 
 const wrapper = new snoowrap({
-    userAgent: process.env.REACT_APP_USER_AGENT,
+    userAgent: navigator.userAgent,
     clientId: process.env.REACT_APP_CLIENT_ID,
     clientSecret: process.env.REACT_APP_CLIENT_SECRET,
     refreshToken: process.env.REACT_APP_REFRESH_TOKEN
