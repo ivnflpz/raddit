@@ -28,13 +28,15 @@ const redditApi = {
         if (sortOptions.timeSupported) {
             cacheKey += '.' + sortOptions.time;
         }
-        if (cacheKey in localStorage) {
-            const l = localStorage.getItem(cacheKey);
-            if (l !== null) {
+        const l = localStorage.getItem(cacheKey);
+        if (l !== null) {
+            const json = JSON.parse(l);
+            if (json.fetched_at + 60000 > new Date().getTime()) {
                 return new Promise((resolve) => {
-                    resolve(JSON.parse(l));
+                    resolve(json.results);
                 });
             }
+            localStorage.removeItem(cacheKey);
         }
 
         let searchFunc;
@@ -58,11 +60,14 @@ const redditApi = {
                 searchFunc = () => new Promise(resolve => resolve([]));
         }
         return searchFunc()
+            .then((results: any) => {
+                return { fetched_at: new Date().getTime(), results: results}
+            })
             // force fetch of all data before sending it to local storage
             .then(JSON.stringify)
             .then((result: string) => {
                 localStorage.setItem(cacheKey, result);
-                return JSON.parse(result);
+                return JSON.parse(result).results;
             });
     },
 
