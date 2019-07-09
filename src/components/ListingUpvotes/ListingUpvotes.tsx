@@ -3,27 +3,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classnames from 'classnames';
 
 import './ListingUpvotes.scss';
-import { Listing } from '../../models';
+import { Listing, UpvoteDirection } from '../../models';
 import util from '../../helpers/util';
 import redditApi from '../../services/RedditApi';
 
 const SCORE_INCREMENT = 1;
-enum Direction {
-    Up,
-    Down,
-    None
-}
-
 interface ListingUpvotesState {
     score: number;
-    direction: Direction;
+    direction: UpvoteDirection;
 }
 class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> { 
     constructor(props: any) {
         super(props);
         this.state = {
             score: 0,
-            direction: Direction.None
+            direction: UpvoteDirection.None
         }
 
         this.handleUpvote = this.handleUpvote.bind(this);
@@ -33,9 +27,9 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
 
     componentDidMount() {
         const listing = this.props.listing;
-        let direction = Direction.None;
+        let direction = UpvoteDirection.None;
         if (listing.likes != null) {
-            direction = listing.likes ? Direction.Up : Direction.Down;
+            direction = listing.likes ? UpvoteDirection.Up : UpvoteDirection.Down;
         }
         this.setState({score: listing.score, direction: direction});
     }
@@ -45,16 +39,16 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
         const oldScore = listing.score;
         const oldDirection = this.state.direction;
 
-        let newDirection = Direction.Up;
+        let newDirection = UpvoteDirection.Up;
         switch (this.state.direction) {
-            case Direction.Up:
-                newDirection = Direction.None;
+            case UpvoteDirection.Up:
+                newDirection = UpvoteDirection.None;
                 listing.score -= SCORE_INCREMENT;
                 break;
-            case Direction.Down:
+            case UpvoteDirection.Down:
                 listing.score += 2*SCORE_INCREMENT;
                 break;
-            case Direction.None:
+            case UpvoteDirection.None:
                 listing.score += SCORE_INCREMENT;
                 break;
         }
@@ -66,36 +60,36 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
         const oldScore = listing.score;
         const oldDirection = this.state.direction;
 
-        let newDirection = Direction.Down;
+        let newDirection = UpvoteDirection.Down;
         switch (this.state.direction) {
-            case Direction.Up:
+            case UpvoteDirection.Up:
                 listing.score -= 2*SCORE_INCREMENT;
                 break;
-            case Direction.Down:
-                newDirection = Direction.None;
+            case UpvoteDirection.Down:
+                newDirection = UpvoteDirection.None;
                 listing.score += SCORE_INCREMENT;
                 break;
-            case Direction.None:
+            case UpvoteDirection.None:
                 listing.score -= SCORE_INCREMENT;
                 break;
         }
         this.handleVote(listing, newDirection, oldScore, oldDirection);
     }
 
-    handleVote(listing: Listing, newDirection: Direction, oldScore: number, oldDirection: Direction) {
+    handleVote(listing: Listing, newDirection: UpvoteDirection, oldScore: number, oldDirection: UpvoteDirection) {
         this.setState({score: listing.score, direction: newDirection});
 
         let voteFunc = redditApi.unvote;
         switch (newDirection) {
-            case Direction.Up:
+            case UpvoteDirection.Up:
                 voteFunc = redditApi.upvote;
                 break;
-            case Direction.Down:
+            case UpvoteDirection.Down:
                 voteFunc = redditApi.downvote;
                 break;
             default:
         }
-        voteFunc(listing).catch((error: any) => {
+        voteFunc(listing).catch(() => {
             this.setState({score: oldScore, direction: oldDirection});
         });
     }
@@ -106,18 +100,18 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
 
         const upClasses = classnames({
             up: true,
-            upvoted: this.state.direction === Direction.Up
+            upvoted: this.state.direction === UpvoteDirection.Up
         });
 
         const scoreClasses = classnames({
             score: true,
-            upvoted: this.state.direction === Direction.Up,
-            downvoted: this.state.direction === Direction.Down
+            upvoted: this.state.direction === UpvoteDirection.Up,
+            downvoted: this.state.direction === UpvoteDirection.Down
         });
 
         const downClasses = classnames({
             down: true,
-            downvoted: this.state.direction === Direction.Down
+            downvoted: this.state.direction === UpvoteDirection.Down
         });
         return (
             <div className="upvotes-container">

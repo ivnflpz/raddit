@@ -64,13 +64,15 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
         if (!this.state.hasResults || !options.timeSupported) {
             return "";
         }
+        const items = Object.keys(TimeDescriptions).map((key: string) => {
+            const cat = key as TimeCategory;
+            return <Dropdown.Item variant="outline-secondary" key={cat} eventKey={cat} active={options.time === cat}>
+                {TimeDescriptions[cat]}
+            </Dropdown.Item>
+        })
         return (
             <DropdownButton as={InputGroup.Append} variant="outline-secondary" title={TimeDescriptions[options.time as TimeCategory]} id="time-dropdown" onSelect={(evt: any) => this.handleTimeSelect(evt)}>
-                {Object.keys(TimeDescriptions).map((key: string) => 
-                    <Dropdown.Item variant="outline-secondary" key={key} eventKey={key} active={options.time === key}>
-                        {TimeDescriptions[key as TimeCategory]}
-                    </Dropdown.Item>
-                )}
+                {items}
             </DropdownButton>
         )
     }
