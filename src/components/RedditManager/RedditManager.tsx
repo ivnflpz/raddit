@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import './RedditManager.css';
+import logo from '../../raddit.png';
 import { Listing } from '../../models';
 import RedditSearch from '../RedditSearch/RedditSearch';
 import RedditList from '../RedditList/RedditList';
@@ -20,16 +21,19 @@ class RedditManager extends Component<{}, {results: Listing[]}> {
         this.setState({results: results});
     }
 
-    render() {
+    renderContainer() {
         const results = this.state.results;
-        const listElem: any = results.length > 0
+        return results.length > 0
             ? <RedditList key={uuid()} results={results}></RedditList>
-            : '';
+            : <img src={logo} className="App-logo" alt="logo" />
+    }
+
+    render() {
         return (
             <div>
                 <RedditSearch handleResults={this.handleResults}></RedditSearch>
                 <div className="container">
-                    {listElem}
+                    {this.renderContainer()}
                 </div>
             </div>
         )
