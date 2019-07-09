@@ -26,9 +26,11 @@ class RedditManager extends Component<{}, {results: Listing[]}> {
             ? <RedditList key={uuid()} results={results}></RedditList>
             : '';
         return (
-            <div className="container">
+            <div>
                 <RedditSearch handleResults={this.handleResults}></RedditSearch>
-                {listElem}
+                <div className="container">
+                    {listElem}
+                </div>
             </div>
         )
     }

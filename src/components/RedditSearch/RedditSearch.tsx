@@ -1,14 +1,11 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import { InputGroup, Dropdown, DropdownButton, FormControl, ButtonToolbar } from 'react-bootstrap';
+import { InputGroup, Dropdown, DropdownButton, FormControl, Navbar } from 'react-bootstrap';
 
 import './RedditSearch.scss';
 
 import redditApi from '../../services/RedditApi';
-import { SortCategory } from '../../models/SortCategory';
-import { TimeCategory } from '../../models/TimeCategory';
-import { SortOption, SortOptions } from '../../models/SortOptions';
+import { SortCategory, SortOption, SortOptions, TimeCategory, TimeDescriptions } from '../../models';
 
 interface RedditSearchState {
     query: string;
@@ -34,8 +31,9 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
         }
         const options: SortOption = this.state.sortOptions[this.state.sort];
         redditApi.search(this.state.query, options).then((results: any) => {
-            this.setState({hasResults: true})
-            this.props.handleResults(results);
+            this.setState({hasResults: true}, () => {
+                this.props.handleResults(results);
+            });
         });
     }
 
@@ -61,21 +59,20 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
     }
 
     renderTimeOptions() {
-        const sort = this.state.sort;
-        const options: SortOption = this.state.sortOptions[sort];
-        if (options.timeSupported) {
-            return (
-                <DropdownButton title={options.time} id="time-dropdown" onSelect={(evt: any) => this.handleTimeSelect(evt)}>
-                    <Dropdown.Item eventKey={TimeCategory.Hour}>Past Hour</Dropdown.Item>
-                    <Dropdown.Item eventKey={TimeCategory.Day}>Past 24 Hours</Dropdown.Item>
-                    <Dropdown.Item eventKey={TimeCategory.Week}>Past Week</Dropdown.Item>
-                    <Dropdown.Item eventKey={TimeCategory.Month}>Past Month</Dropdown.Item>
-                    <Dropdown.Item eventKey={TimeCategory.Year}>Past Year</Dropdown.Item>
-                    <Dropdown.Item eventKey={TimeCategory.All}>Of All Time</Dropdown.Item>
-                </DropdownButton>
-            )
+        const options: SortOption = this.state.sortOptions[this.state.sort];
+
+        if (!this.state.hasResults || !options.timeSupported) {
+            return "";
         }
-        return "";
+        return (
+            <DropdownButton as={InputGroup.Append} variant="outline-secondary" title={TimeDescriptions[options.time as TimeCategory]} id="time-dropdown" onSelect={(evt: any) => this.handleTimeSelect(evt)}>
+                {Object.keys(TimeDescriptions).map((key: string) => 
+                    <Dropdown.Item variant="outline-secondary" key={key} eventKey={key} active={options.time === key}>
+                        {TimeDescriptions[key as TimeCategory]}
+                    </Dropdown.Item>
+                )}
+            </DropdownButton>
+        )
     }
 
     renderSortOptions() {
@@ -83,19 +80,21 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
             return "";
         }
         return (
-            <ButtonToolbar>
-                <DropdownButton title={'Sort ' + this.state.sort} id="sort-dropdown" onSelect={(evt: any) => this.handleSortSelect(evt)}>
-                    {Object.keys(this.state.sortOptions).map((k: string) => <Dropdown.Item key={k} eventKey={k}>{k}</Dropdown.Item>)}
-                </DropdownButton>
-
-                {this.renderTimeOptions()}
-            </ButtonToolbar>
+            <DropdownButton as={InputGroup.Append} variant="outline-secondary" title={'Sort ' + this.state.sort} id="sort-dropdown" onSelect={(evt: any) => this.handleSortSelect(evt)}>
+                {Object.keys(this.state.sortOptions).map((key: string) => 
+                    <Dropdown.Item key={key} eventKey={key} active={this.state.sort === key}>
+                        <FontAwesomeIcon icon={SortOptions[key as SortCategory].icon}></FontAwesomeIcon>
+                        {key}
+                    </Dropdown.Item>
+                )}
+            </DropdownButton>
         )
     }
 
     render() {
         return (
-            <div>
+            <Navbar bg="light" variant="light" fixed="top">
+            
                 <InputGroup>
                     <InputGroup.Prepend>
                         <InputGroup.Text><FontAwesomeIcon icon="search"></FontAwesomeIcon></InputGroup.Text>
@@ -104,9 +103,10 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
                         value={this.state.query} 
                         onChange={(evt: any) => this.updateQueryValue(evt)} 
                         onKeyPress={(evt: any) => this.keyPressed(evt)} />
+                    {this.renderSortOptions()}
+                    {this.renderTimeOptions()}
                 </InputGroup>
-                {this.renderSortOptions()}
-            </div>
+            </Navbar>
         );
     }
 }

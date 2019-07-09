@@ -57,10 +57,13 @@ const redditApi = {
             default:
                 searchFunc = () => new Promise(resolve => resolve([]));
         }
-        return searchFunc().then((results: any) => {
-            localStorage.setItem(cacheKey, JSON.stringify(results));
-            return results;
-        });
+        return searchFunc()
+            // force fetch of all data before sending it to local storage
+            .then(JSON.stringify)
+            .then((result: string) => {
+                localStorage.setItem(cacheKey, result);
+                return JSON.parse(result);
+            });
     },
 
     upvote(listing: Listing) {

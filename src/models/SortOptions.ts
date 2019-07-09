@@ -1,33 +1,40 @@
 import { SortCategory } from "./SortCategory";
 import { TimeCategory } from "./TimeCategory";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 export interface SortOption {
     type: SortCategory;
     timeSupported: boolean;
-    time?: TimeCategory;
+    time?: TimeCategory;    
+    icon: IconProp;
 }
 
 export const SortOptions = {
-    [SortCategory.Hot]: {
+    [SortCategory.Hot]: <SortOption>{
         type: SortCategory.Hot,
-        timeSupported: false
+        timeSupported: false,
+        icon: "fire"
     },
-    [SortCategory.New]: {
+    [SortCategory.New]: <SortOption>{
         type: SortCategory.New,
-        timeSupported: false
+        timeSupported: false,
+        icon: "certificate"
     },
-    [SortCategory.Controversial]: {
+    [SortCategory.Controversial]: <SortOption>{
         type: SortCategory.Controversial,
         timeSupported: true,
-        time: TimeCategory.All
+        time: TimeCategory.All,
+        icon: "bolt"
     },
-    [SortCategory.Top]: {
+    [SortCategory.Top]: <SortOption>{
         type: SortCategory.Top,
         timeSupported: true,
-        time: TimeCategory.All
+        time: TimeCategory.All,
+        icon: "poll"
     },
-    [SortCategory.Rising]: {
+    [SortCategory.Rising]: <SortOption>{
         type: SortCategory.Rising,
-        timeSupported: false
+        timeSupported: false,
+        icon: "chart-line"
     }
 }
