@@ -24,7 +24,7 @@ class RedditContent extends Component<{listing: Listing},{}> {
             return this.renderVideo(preview.reddit_video_preview);
         } else if (preview.images != null) {
             const url = preview.images[0].source.url;
-            return <img className="preview-image" alt="Post Image" src={url}></img>
+            return <img className="preview-image" alt="Post" src={url}></img>
         }
         return "";
     }

@@ -45,7 +45,7 @@ class RedditList extends Component<RedditListProps, RedditListState> {
         }
 
         let items: any[] = [];
-        this.state.items.map((item, i) => {
+        this.state.items.forEach((item, i) => {
             items.push(
                 <RedditListing key={i} listing={item}></RedditListing>
             )
