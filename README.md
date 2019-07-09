@@ -21,14 +21,6 @@ Currently, the app requires the following permissions from Reddit:
 
 Finally click the generate button to get the access and refresh tokens.
 
-### Start the project
-
-Run the following commands to install the dependencies and start the server on `http://localhost:3000`
-```
-npm install
-npm start
-```
-
 ### Setup the project
 
 Create a new file called `.env.local` or modify `.env` on the root directory. The following contents should be filled out and replaced with the appropriate values from the steps above:
@@ -36,4 +28,12 @@ Create a new file called `.env.local` or modify `.env` on the root directory. Th
 REACT_APP_CLIENT_ID=reddit_client_id
 REACT_APP_CLIENT_SECRET=reddit_client_secret
 REACT_APP_REFRESH_TOKEN=reddit_refresh_token
+```
+
+### Start the project
+
+Run the following commands to install the dependencies and start the server on `http://localhost:3000`
+```
+npm install
+npm start
 ```
