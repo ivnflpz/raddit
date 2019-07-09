@@ -11,31 +11,31 @@ class RedditFooter extends Component<{listing: Listing},{}> {
         return (
             <div className="footer">
                 <div className="link">
-                    <a href="#">
+                    <button>
                         <FontAwesomeIcon icon="comment-alt"></FontAwesomeIcon>
                         <span className="link-text">{numString} comments</span>
-                    </a>
+                    </button>
                 </div>
 
                 <div className="link">
-                    <a href="#">
+                    <button>
                         <FontAwesomeIcon icon="award"></FontAwesomeIcon>
                         <span className="link-text">Give award</span>
-                    </a>
+                    </button>
                 </div>
                 
                 <div className="link">
-                    <a href="#">
+                    <button>
                         <FontAwesomeIcon icon="share"></FontAwesomeIcon>
                         <span className="link-text">Share</span>
-                    </a>
+                    </button>
                 </div>
 
                 <div className="link">
-                    <a href="#">
+                    <button>
                         <FontAwesomeIcon icon="bookmark"></FontAwesomeIcon>
                         <span className="link-text">Save</span>
-                    </a>
+                    </button>
                 </div>
             </div>
         )

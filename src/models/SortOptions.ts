@@ -10,31 +10,31 @@ export interface SortOption {
 }
 
 export const SortOptions = {
-    [SortCategory.Hot]: <SortOption>{
+    [SortCategory.Hot]: {
         type: SortCategory.Hot,
         timeSupported: false,
         icon: "fire"
-    },
-    [SortCategory.New]: <SortOption>{
+    } as SortOption,
+    [SortCategory.New]: {
         type: SortCategory.New,
         timeSupported: false,
         icon: "certificate"
-    },
-    [SortCategory.Controversial]: <SortOption>{
+    } as SortOption,
+    [SortCategory.Controversial]: {
         type: SortCategory.Controversial,
         timeSupported: true,
         time: TimeCategory.All,
         icon: "bolt"
-    },
-    [SortCategory.Top]: <SortOption>{
+    } as SortOption,
+    [SortCategory.Top]: {
         type: SortCategory.Top,
         timeSupported: true,
         time: TimeCategory.All,
         icon: "poll"
-    },
-    [SortCategory.Rising]: <SortOption>{
+    } as SortOption,
+    [SortCategory.Rising]: {
         type: SortCategory.Rising,
         timeSupported: false,
         icon: "chart-line"
-    }
+    } as SortOption
 }

@@ -17,16 +17,14 @@
         white-space: nowrap;
         word-break: normal;
 
-        a {
+        button {
             padding: 4px;
-        }
-
-        a:link {
-            text-decoration: none;
+            border: none;
+            background: transparent;
             color: #878A8C;
         }
 
-        a:hover {
+        button:hover {
             background: rgba(26,26,27,0.1);
         }
 
