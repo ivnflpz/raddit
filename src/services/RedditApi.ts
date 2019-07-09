@@ -9,6 +9,9 @@ const wrapper = new snoowrap({
     refreshToken: process.env.REACT_APP_REFRESH_TOKEN
 });
 
+// 5 minutes
+const DEFAULT_EXPIRATION_MS = 300000;
+
 function destroyCache(subreddit: string) {
     const keys = Object.keys(localStorage);
     for (let key of keys) {
@@ -16,6 +19,10 @@ function destroyCache(subreddit: string) {
             localStorage.removeItem(key);
         }
     }
+}
+
+function currentUtc() {
+    return new Date().getTime();
 }
 
 const redditApi = {
@@ -28,12 +35,12 @@ const redditApi = {
         if (sortOptions.timeSupported) {
             cacheKey += '.' + sortOptions.time;
         }
-        const l = localStorage.getItem(cacheKey);
-        if (l !== null) {
-            const json = JSON.parse(l);
-            if (json.fetched_at + 60000 > new Date().getTime()) {
+        const jsonString = localStorage.getItem(cacheKey);
+        if (jsonString !== null) {
+            const cacheData = JSON.parse(jsonString);
+            if (cacheData.fetched_at_ms + DEFAULT_EXPIRATION_MS > currentUtc()) {
                 return new Promise((resolve) => {
-                    resolve(json.results);
+                    resolve(cacheData.results);
                 });
             }
             localStorage.removeItem(cacheKey);
@@ -61,7 +68,7 @@ const redditApi = {
         }
         return searchFunc()
             .then((results: any) => {
-                return { fetched_at: new Date().getTime(), results: results}
+                return { fetched_at_ms: currentUtc(), results: results}
             })
             // force fetch of all data before sending it to local storage
             .then(JSON.stringify)
