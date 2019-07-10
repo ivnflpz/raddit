@@ -1,13 +1,10 @@
 import { Listing, SortCategory, SortOption, TimeOptions } from '../models';
+import util from '../helpers/util';
 
 const snoowrap = require('snoowrap');
 
 // 2 minutes
 const DEFAULT_EXPIRATION_MS = 120000;
-
-function currentUtc() {
-    return new Date().getTime();
-}
 
 export class RedditHandler {
     private static instance: RedditHandler;
@@ -44,7 +41,7 @@ export class RedditHandler {
         const jsonString = localStorage.getItem(cacheKey);
         if (jsonString !== null) {
             const cacheData = JSON.parse(jsonString);
-            if (cacheData.fetched_at_ms + expiration_ms > currentUtc()) {
+            if (cacheData.fetched_at_ms + expiration_ms > util.currentUtc()) {
                 return new Promise((resolve) => {
                     resolve(cacheData.results);
                 });
@@ -90,7 +87,7 @@ export class RedditHandler {
         }
         return searchFunc()
             .then((results: any) => {
-                return { fetched_at_ms: currentUtc(), results: results}
+                return { fetched_at_ms: util.currentUtc(), results: results}
             })
             // force fetch of all data before sending it to local storage
             .then(JSON.stringify)

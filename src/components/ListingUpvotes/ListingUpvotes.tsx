@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import './ListingUpvotes.scss';
 import { Listing, UpvoteDirection } from '../../models';
 import util from '../../helpers/util';
-import { RedditHandler } from '../../services/RedditApi';
+import { RedditHandler } from '../../services/RedditHandler';
 
 const SCORE_INCREMENT = 1;
 interface ListingUpvotesState {

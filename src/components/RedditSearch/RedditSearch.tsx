@@ -4,7 +4,7 @@ import { InputGroup, Dropdown, DropdownButton, FormControl, Navbar, Spinner } fr
 
 import './RedditSearch.scss';
 
-import { RedditHandler } from '../../services/RedditApi';
+import { RedditHandler } from '../../services/RedditHandler';
 import { SortCategory, SortOption, SortOptions, TimeCategory, TimeOptions } from '../../models';
 
 interface RedditSearchState {
