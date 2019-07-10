@@ -1,4 +1,4 @@
-import { Listing, SortCategory, SortOption } from '../models';
+import { Listing, SortCategory, SortOption, TimeOptions } from '../models';
 
 const snoowrap = require('snoowrap');
 
@@ -9,8 +9,8 @@ const wrapper = new snoowrap({
     refreshToken: process.env.REACT_APP_REFRESH_TOKEN
 });
 
-// 5 minutes
-const DEFAULT_EXPIRATION_MS = 300000;
+// 2 minutes
+const DEFAULT_EXPIRATION_MS = 120000;
 
 function destroyCache(subreddit: string) {
     const keys = Object.keys(localStorage);
@@ -32,13 +32,15 @@ const redditApi = {
         }
 
         let cacheKey = subreddit + '.' + sortOptions.type;
-        if (sortOptions.timeSupported) {
+        let expiration_ms = DEFAULT_EXPIRATION_MS;
+        if (sortOptions.timeSupported && sortOptions.time != null) {
             cacheKey += '.' + sortOptions.time;
+            expiration_ms = TimeOptions[sortOptions.time].expiration_sec * 1000;
         }
         const jsonString = localStorage.getItem(cacheKey);
         if (jsonString !== null) {
             const cacheData = JSON.parse(jsonString);
-            if (cacheData.fetched_at_ms + DEFAULT_EXPIRATION_MS > currentUtc()) {
+            if (cacheData.fetched_at_ms + expiration_ms > currentUtc()) {
                 return new Promise((resolve) => {
                     resolve(cacheData.results);
                 });

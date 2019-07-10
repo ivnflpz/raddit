@@ -5,7 +5,7 @@ import { InputGroup, Dropdown, DropdownButton, FormControl, Navbar, Spinner } fr
 import './RedditSearch.scss';
 
 import redditApi from '../../services/RedditApi';
-import { SortCategory, SortOption, SortOptions, TimeCategory, TimeDescriptions } from '../../models';
+import { SortCategory, SortOption, SortOptions, TimeCategory, TimeOptions } from '../../models';
 
 interface RedditSearchState {
     query: string;
@@ -66,14 +66,18 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
         if (!this.state.hasResults || !options.timeSupported) {
             return "";
         }
-        const items = Object.keys(TimeDescriptions).map((key: string) => {
+        const items = Object.keys(TimeOptions).map((key: string) => {
             const cat = key as TimeCategory;
             return <Dropdown.Item variant="outline-secondary" key={cat} eventKey={cat} active={options.time === cat}>
-                {TimeDescriptions[cat]}
+                {TimeOptions[cat].description}
             </Dropdown.Item>
         })
         return (
-            <DropdownButton as={InputGroup.Append} variant="outline-secondary" title={TimeDescriptions[options.time as TimeCategory]} id="time-dropdown" onSelect={(evt: any) => this.handleTimeSelect(evt)}>
+            <DropdownButton as={InputGroup.Append} 
+                variant="outline-secondary" 
+                title={TimeOptions[options.time as TimeCategory].description} 
+                id="time-dropdown" 
+                onSelect={(evt: any) => this.handleTimeSelect(evt)}>
                 {items}
             </DropdownButton>
         )
