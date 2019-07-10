@@ -4,7 +4,7 @@ import { InputGroup, Dropdown, DropdownButton, FormControl, Navbar, Spinner } fr
 
 import './RedditSearch.scss';
 
-import redditApi from '../../services/RedditApi';
+import { RedditHandler } from '../../services/RedditApi';
 import { SortCategory, SortOption, SortOptions, TimeCategory, TimeOptions } from '../../models';
 
 interface RedditSearchState {
@@ -15,6 +15,7 @@ interface RedditSearchState {
     loading: boolean;
 }
 class RedditSearch extends React.Component<{handleResults: Function}, RedditSearchState> {
+    private redditHandler: RedditHandler;
     constructor(props: any) {
         super(props);
 
@@ -25,6 +26,8 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
             hasResults: false,
             loading: false
         }
+
+        this.redditHandler = RedditHandler.getInstance();
     }
 
     search() {
@@ -32,7 +35,7 @@ class RedditSearch extends React.Component<{handleResults: Function}, RedditSear
             return;
         }
         const options: SortOption = this.state.sortOptions[this.state.sort];
-        redditApi.search(this.state.query, options).then((results: any) => {
+        this.redditHandler.search(this.state.query, options).then((results: any) => {
             this.setState({hasResults: true, loading: false}, () => {
                 this.props.handleResults(results);
             });

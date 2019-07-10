@@ -2,31 +2,35 @@ import { Listing, SortCategory, SortOption, TimeOptions } from '../models';
 
 const snoowrap = require('snoowrap');
 
-const wrapper = new snoowrap({
-    userAgent: navigator.userAgent,
-    clientId: process.env.REACT_APP_CLIENT_ID,
-    clientSecret: process.env.REACT_APP_CLIENT_SECRET,
-    refreshToken: process.env.REACT_APP_REFRESH_TOKEN
-});
-
 // 2 minutes
 const DEFAULT_EXPIRATION_MS = 120000;
-
-function destroyCache(subreddit: string) {
-    const keys = Object.keys(localStorage);
-    for (let key of keys) {
-        if (key.startsWith(subreddit)) {
-            localStorage.removeItem(key);
-        }
-    }
-}
 
 function currentUtc() {
     return new Date().getTime();
 }
 
-const redditApi = {
-    search(subreddit: string, sortOptions: SortOption) {
+export class RedditHandler {
+    private static instance: RedditHandler;
+
+    private redditApi: any;
+    
+    private constructor() {
+        this.redditApi = new snoowrap({
+            userAgent: navigator.userAgent,
+            clientId: process.env.REACT_APP_CLIENT_ID,
+            clientSecret: process.env.REACT_APP_CLIENT_SECRET,
+            refreshToken: process.env.REACT_APP_REFRESH_TOKEN
+        });
+    }
+
+    static getInstance() {
+        if (!RedditHandler.instance) {
+            RedditHandler.instance = new RedditHandler();
+        }
+        return RedditHandler.instance;
+    }
+
+    search = (subreddit: string, sortOptions: SortOption) => {
         if (subreddit.trim().length === 0) {
             return new Promise(resolve => resolve([]));
         }
@@ -48,22 +52,38 @@ const redditApi = {
             localStorage.removeItem(cacheKey);
         }
 
+        return this.handleSearch(subreddit, sortOptions, cacheKey);
+    }
+
+    upvote = (listing: Listing) => {
+        return this.handleVote(() => this.redditApi.getSubmission(listing.id).upvote(), listing);
+    }
+
+    downvote= (listing: Listing) => {
+        return this.handleVote(() => this.redditApi.getSubmission(listing.id).downvote(), listing);
+    }
+
+    unvote = (listing: Listing) => {
+        return this.handleVote(() => this.redditApi.getSubmission(listing.id).unvote(), listing);
+    }
+
+    private handleSearch = (subreddit: string, sortOptions: SortOption, cacheKey: string) => {
         let searchFunc;
         switch (sortOptions.type) {
             case SortCategory.Hot:
-                searchFunc = () => wrapper.getSubreddit(subreddit).getHot({limit: 50});
+                searchFunc = () => this.redditApi.getSubreddit(subreddit).getHot({limit: 50});
                 break;
             case SortCategory.New:
-                searchFunc = () => wrapper.getSubreddit(subreddit).getNew({limit: 50});
+                searchFunc = () => this.redditApi.getSubreddit(subreddit).getNew({limit: 50});
                 break;
             case SortCategory.Controversial:
-                searchFunc = () => wrapper.getSubreddit(subreddit).getControversial({limit: 50, time: sortOptions.time});
+                searchFunc = () => this.redditApi.getSubreddit(subreddit).getControversial({limit: 50, time: sortOptions.time});
                 break;
             case SortCategory.Top:
-                searchFunc = () => wrapper.getSubreddit(subreddit).getTop({limit: 50, time: sortOptions.time});
+                searchFunc = () => this.redditApi.getSubreddit(subreddit).getTop({limit: 50, time: sortOptions.time});
                 break;
             case SortCategory.Rising:
-                searchFunc = () => wrapper.getSubreddit(subreddit).getRising({limit: 50});
+                searchFunc = () => this.redditApi.getSubreddit(subreddit).getRising({limit: 50});
                 break;
             default:
                 searchFunc = () => new Promise(resolve => resolve([]));
@@ -78,40 +98,25 @@ const redditApi = {
                 localStorage.setItem(cacheKey, result);
                 return JSON.parse(result).results;
             });
-    },
+    }
 
-    upvote(listing: Listing) {
+    private handleVote = (voteFunc: Function, listing: Listing) => {
         return new Promise((resolve, reject) => {
-            wrapper.getSubmission(listing.id).upvote()
+            voteFunc()
                 .then(() => {
-                    destroyCache(listing.subreddit);
-                    resolve();
-                })
-                .catch(reject)
-        });
-    },
-
-    downvote(listing: Listing) {
-        return new Promise((resolve, reject) => {
-            wrapper.getSubmission(listing.id).downvote()
-                .then(() => {
-                    destroyCache(listing.subreddit);
-                    resolve();
-                })
-                .catch(reject)
-        });
-    },
-
-    unvote(listing: Listing) {
-        return new Promise((resolve, reject) => {
-            wrapper.getSubmission(listing.id).unvote()
-                .then(() => {
-                    destroyCache(listing.subreddit);
+                    this.destroyCache(listing.subreddit);
                     resolve();
                 })
                 .catch(reject)
         });
     }
-}
 
-export default redditApi;
+    private destroyCache = (subreddit: string) => {
+        const keys = Object.keys(localStorage);
+        for (let key of keys) {
+            if (key.startsWith(subreddit)) {
+                localStorage.removeItem(key);
+            }
+        }
+    }
+}
