@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import './ListingUpvotes.scss';
 import { Listing, UpvoteDirection } from '../../models';
 import util from '../../helpers/util';
-import redditApi from '../../services/RedditApi';
+import { RedditHandler } from '../../services/RedditHandler';
 
 const SCORE_INCREMENT = 1;
 interface ListingUpvotesState {
@@ -13,6 +13,8 @@ interface ListingUpvotesState {
     direction: UpvoteDirection;
 }
 class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> { 
+    private redditHandler: RedditHandler;
+
     constructor(props: any) {
         super(props);
         this.state = {
@@ -23,6 +25,8 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
         this.handleUpvote = this.handleUpvote.bind(this);
         this.handleDownvote = this.handleDownvote.bind(this);
         this.handleVote = this.handleVote.bind(this);
+
+        this.redditHandler = RedditHandler.getInstance();
     }
 
     componentDidMount() {
@@ -79,13 +83,13 @@ class ListingUpvotes extends Component<{listing: Listing}, ListingUpvotesState> 
     handleVote(listing: Listing, newDirection: UpvoteDirection, oldScore: number, oldDirection: UpvoteDirection) {
         this.setState({score: listing.score, direction: newDirection});
 
-        let voteFunc = redditApi.unvote;
+        let voteFunc = this.redditHandler.unvote;
         switch (newDirection) {
             case UpvoteDirection.Up:
-                voteFunc = redditApi.upvote;
+                voteFunc = this.redditHandler.upvote;
                 break;
             case UpvoteDirection.Down:
-                voteFunc = redditApi.downvote;
+                voteFunc = this.redditHandler.downvote;
                 break;
             default:
         }
