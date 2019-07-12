@@ -11,6 +11,7 @@ export interface Listing {
     media: Media;
     num_comments: number;
     preview?: Preview;
+    saved: boolean;
     selftext_html?: string;
     subreddit: string;
 }

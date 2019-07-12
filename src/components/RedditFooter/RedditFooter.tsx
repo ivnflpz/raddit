@@ -4,8 +4,31 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import './RedditFooter.scss';
 import { Listing } from '../../models';
 import util from '../../helpers/util';
+import { RedditHandler } from '../../services/RedditHandler';
 
-class RedditFooter extends Component<{listing: Listing},{}> {
+class RedditFooter extends Component<{listing: Listing},{saved: boolean}> {
+    private redditHandler: RedditHandler;
+
+    constructor(props: any) {
+        super(props);
+
+        this.state = {
+            saved: false
+        }
+
+        this.redditHandler = RedditHandler.getInstance();
+    }
+
+    componentDidMount() {
+        let saved = this.props.listing.saved;
+        this.setState({saved});
+    }
+
+    toggleSave = () => {
+        const listing = this.props.listing;
+        this.redditHandler.save(listing);
+    }
+
     renderFooter(numComments: number) {
         let numString = util.normalizeNumber(numComments);
         return (
@@ -32,9 +55,9 @@ class RedditFooter extends Component<{listing: Listing},{}> {
                 </div>
 
                 <div className="link">
-                    <button>
+                    <button onClick={this.toggleSave}>
                         <FontAwesomeIcon icon="bookmark"></FontAwesomeIcon>
-                        <span className="link-text">Save</span>
+                        <span className="link-text">{this.state.saved ? 'Unsave' : 'Save'}</span>
                     </button>
                 </div>
             </div>
