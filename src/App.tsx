@@ -15,6 +15,8 @@ import {
   faSearch,
   faShare
 } from '@fortawesome/free-solid-svg-icons';
+
+import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
  
 import './App.css';
 import RedditManager from './components/RedditManager/RedditManager';
@@ -25,6 +27,7 @@ library.add(
   faAward,
   faBolt,
   faBookmark,
+  farBookmark,
   faChartLine,
   faCertificate,
   faCommentAlt,

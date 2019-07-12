@@ -67,7 +67,7 @@ class RedditFooter extends Component<{listing: Listing},{saved: boolean}> {
 
                 <div className="link">
                     <button onClick={this.toggleSave}>
-                        <FontAwesomeIcon icon="bookmark"></FontAwesomeIcon>
+                        <FontAwesomeIcon icon={this.state.saved ? 'bookmark' : ['far', 'bookmark']}></FontAwesomeIcon>
                         <span className="link-text">{this.state.saved ? 'Unsave' : 'Save'}</span>
                     </button>
                 </div>
