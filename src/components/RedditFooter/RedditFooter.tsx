@@ -26,10 +26,18 @@ class RedditFooter extends Component<{listing: Listing},{saved: boolean}> {
 
     toggleSave = () => {
         const listing = this.props.listing;
-        this.setState({saved: true});
-        this.redditHandler.save(listing).catch(() => {
+
+        if (this.state.saved) {
             this.setState({saved: false});
-        });
+            this.redditHandler.unsave(listing).catch(() => {
+                this.setState({saved: true});
+            });
+        } else {
+            this.setState({saved: true});
+            this.redditHandler.save(listing).catch(() => {
+                this.setState({saved: false});
+            });
+        }
     }
 
     renderFooter(numComments: number) {

@@ -68,6 +68,10 @@ export class RedditHandler {
         return this.handleListingAction(() => this.redditApi.getSubmission(listing.id).save(), listing);
     }
 
+    unsave = (listing: Listing) => {
+        return this.handleListingAction(() => this.redditApi.getSubmission(listing.id).unsave(), listing);
+    }
+
     private handleSearch = (subreddit: string, sortOptions: SortOption, cacheKey: string) => {
         let searchFunc;
         switch (sortOptions.type) {
