@@ -53,15 +53,23 @@ export class RedditHandler {
     }
 
     upvote = (listing: Listing) => {
-        return this.handleVote(() => this.redditApi.getSubmission(listing.id).upvote(), listing);
+        return this.handleListingAction(() => this.redditApi.getSubmission(listing.id).upvote(), listing);
     }
 
     downvote= (listing: Listing) => {
-        return this.handleVote(() => this.redditApi.getSubmission(listing.id).downvote(), listing);
+        return this.handleListingAction(() => this.redditApi.getSubmission(listing.id).downvote(), listing);
     }
 
     unvote = (listing: Listing) => {
-        return this.handleVote(() => this.redditApi.getSubmission(listing.id).unvote(), listing);
+        return this.handleListingAction(() => this.redditApi.getSubmission(listing.id).unvote(), listing);
+    }
+
+    save = (listing: Listing) => {
+        return this.handleListingAction(() => this.redditApi.getSubmission(listing.id).save(), listing);
+    }
+
+    unsave = (listing: Listing) => {
+        return this.handleListingAction(() => this.redditApi.getSubmission(listing.id).unsave(), listing);
     }
 
     private handleSearch = (subreddit: string, sortOptions: SortOption, cacheKey: string) => {
@@ -97,9 +105,9 @@ export class RedditHandler {
             });
     }
 
-    private handleVote = (voteFunc: Function, listing: Listing) => {
+    private handleListingAction = (func: Function, listing: Listing) => {
         return new Promise((resolve, reject) => {
-            voteFunc()
+            func()
                 .then(() => {
                     this.destroyCache(listing.subreddit);
                     resolve();
